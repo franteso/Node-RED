@@ -109,14 +109,22 @@ RUN npm install --unsafe-perm --no-update-notifier --no-fund --only=production \
     node-red-contrib-buffer-parser \
     node-red-contrib-calc \
     node-red-contrib-schedex
+# --- FINAL FORCE CONFIG ---
 USER root
-# Borramos cualquier settings que exista y ponemos el nuestro
-RUN rm -f /usr/src/node-red/settings.js
+
+# 1. Forzamos la creación de la carpeta y permisos
+RUN mkdir -p /data && chown -R node-red:node-red /data
+
+# 2. Copiamos el settings a las DOS ubicaciones posibles
+COPY settings.js /data/settings.js
 COPY settings.js /usr/src/node-red/settings.js
-RUN chown -R node-red:node-red /data /usr/src/node-red/settings.js
+
+# 3. Aseguramos permisos de ejecución y lectura
+RUN chown node-red:node-red /data/settings.js /usr/src/node-red/settings.js
+RUN chmod 664 /data/settings.js /usr/src/node-red/settings.js
 
 USER node-red
 EXPOSE 1880
 
-# Forzamos la ruta absoluta al settings.js
-CMD ["npm", "start", "--", "--userDir", "/data", "--settings", "/usr/src/node-red/settings.js"]
+# 4. Comando de arranque con puntero EXPLÍCITO al archivo
+CMD ["npm", "start", "--", "--userDir", "/data", "--settings", "/data/settings.js"]
