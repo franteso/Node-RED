@@ -110,14 +110,13 @@ RUN npm install --unsafe-perm --no-update-notifier --no-fund --only=production \
     node-red-contrib-calc \
     node-red-contrib-schedex
 USER root
-RUN mkdir -p /data
-COPY settings.js /data/settings.js
-RUN chown -R node-red:node-red /data
+# Borramos cualquier settings que exista y ponemos el nuestro
+RUN rm -f /usr/src/node-red/settings.js
+COPY settings.js /usr/src/node-red/settings.js
+RUN chown -R node-red:node-red /data /usr/src/node-red/settings.js
 
 USER node-red
-
-# Expose Node-RED port
 EXPOSE 1880
 
-# Comando simplificado: Node-RED busca settings.js en --userDir por defecto
-CMD ["npm", "start", "--", "--userDir", "/data"]
+# Forzamos la ruta absoluta al settings.js
+CMD ["npm", "start", "--", "--userDir", "/data", "--settings", "/usr/src/node-red/settings.js"]
