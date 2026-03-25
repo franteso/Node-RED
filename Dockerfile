@@ -109,7 +109,9 @@ RUN npm install --unsafe-perm --no-update-notifier --no-fund --only=production \
     node-red-contrib-buffer-parser \
     node-red-contrib-calc \
     node-red-contrib-schedex
-
+USER root
+COPY settings.js /app/settings.js
+USER node-red
 # Set environment variables
 ENV NODE_RED_ENABLE_SAFE_MODE=false \
     NODE_RED_ENABLE_PROJECTS=true
