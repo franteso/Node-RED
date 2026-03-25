@@ -110,14 +110,14 @@ RUN npm install --unsafe-perm --no-update-notifier --no-fund --only=production \
     node-red-contrib-calc \
     node-red-contrib-schedex
 USER root
-COPY settings.js /app/settings.js
+RUN mkdir -p /data
+COPY settings.js /data/settings.js
+RUN chown -R node-red:node-red /data
+
 USER node-red
-# Set environment variables
-ENV NODE_RED_ENABLE_SAFE_MODE=false \
-    NODE_RED_ENABLE_PROJECTS=true
 
 # Expose Node-RED port
 EXPOSE 1880
 
-# Start Node-RED
-CMD ["npm", "start", "--", "--userDir", "/data", "--settings", "/app/settings.js"]
+# Comando simplificado: Node-RED busca settings.js en --userDir por defecto
+CMD ["npm", "start", "--", "--userDir", "/data"]
