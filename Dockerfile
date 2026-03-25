@@ -118,4 +118,4 @@ ENV NODE_RED_ENABLE_SAFE_MODE=false \
 EXPOSE 1880
 
 # Start Node-RED
-CMD ["npm", "start", "--cache", "/data/.npm", "--", "--userDir", "/data"]
+CMD ["npm", "start", "--", "--userDir", "/data", "--settings", "/app/settings.js"]
